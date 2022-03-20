@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Aubrey Ordering System.</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      body {
+	  background-color: #eee;
+      }
+      h1, p {
+	  color: #000000;
+      }
+      #order-summary-heading {
+	  text-align: center;
+      }
+      #order-summary-container {
+	  width: 600px;
+	  margin: 0 auto;
+      }
+    </style>
+    
+  </head>
+  <body>
+    <br>
+    <h1 id="order-summary-heading">= Order Summary =</h1>
+    <div id="order-summary-container">
+    <script>
+      let orders = JSON.parse(window.localStorage.getItem("orders"));
+      let total = 0;
+
+      for(let i=0; i<orders.length; i++) {
+	  total += (orders[i].price * orders[i].qty);
+	  document.write("<br>" + "Item: " + orders[i].item + "<br>");
+	  document.write("Price: " + orders[i].price + "<br>");
+	  document.write("Qty: " + orders[i].qty + "<br>");
+	  document.write("Subtotal: " + orders[i].price * orders[i].qty);
+      }
+      document.write("<hr>");
+      document.write("Total: " + total);
+
+      function payOrders() {
+	  let payment = document.getElementById("payment");
+	  let change = 0;
+	  let pay = 0;
+	  let orders = JSON.parse(window.localStorage.getItem("orders"));
+	  let total = 0;
+	  for(let i=0; i<orders.length; i++) {
+	      total += orders[i].price * orders[i].qty;
+	  }
+
+	  if(Number(payment.value) < total) {
+	      alert("Payment Insufficient!");
+	  } else {
+	      change = Number(payment.value) - total;
+	      let orderPayment = {
+		  pay: Number(payment.value),
+		  total: total,
+		  change: change
+	      };
+	      window.localStorage.setItem("orderPayment", JSON.stringify(orderPayment));
+	      
+	      alert("Enjoy your food. Your change is " + change);
+	  }
+	  payment.value = "";
+      }
+
+      </script>
+
+    <br><br>
+
+    <center>
+      <label>Payment:</label>
+      <input id="payment" type="text" placeholder="Enter your payment.."/>
+    </center>
+    
+    <br><br>
+    
+    <center><a href="index.html"><button>Back Home</button></a>   |   <button onclick="payOrders();">Pay Orders</button>   |   <a href="order-receipt.html"><button>View Receipt</button></a></center>
+    </div>
+  </body>
+</html>
